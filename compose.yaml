@@ -1,0 +1,38 @@
+
+services:
+  postgres:
+    image: postgres:17
+    container_name: sentinelai-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: sentinelai
+      POSTGRES_USER: sentinelai
+      POSTGRES_PASSWORD: sentinelai_dev
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sentinelai -d sentinelai"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: .
+    container_name: sentinelai-backend
+    restart: unless-stopped
+    ports:
+      - "8081:8080"
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/sentinelai
+      DB_USER: sentinelai
+      DB_PASSWORD: sentinelai_dev
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
+      OLLAMA_MODEL: qwen3:4b-instruct
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
