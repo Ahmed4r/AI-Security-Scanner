@@ -7,7 +7,7 @@ services:
     environment:
       POSTGRES_DB: sentinelai
       POSTGRES_USER: sentinelai
-      POSTGRES_PASSWORD: sentinelai_dev
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
     ports:
       - "5433:5432"
     volumes:
@@ -27,7 +27,7 @@ services:
     environment:
       DB_URL: jdbc:postgresql://postgres:5432/sentinelai
       DB_USER: sentinelai
-      DB_PASSWORD: sentinelai_dev
+      DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
       OLLAMA_BASE_URL: http://host.docker.internal:11434
       OLLAMA_MODEL: qwen3:4b-instruct
     depends_on:

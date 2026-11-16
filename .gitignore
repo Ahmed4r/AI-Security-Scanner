@@ -1,8 +1,17 @@
+
 HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+
+### Environment Variables & Secrets ###
+.env
+.env.*
+!.env.example
+
+### Logs ###
+*.log
 
 ### STS ###
 .apt_generated
