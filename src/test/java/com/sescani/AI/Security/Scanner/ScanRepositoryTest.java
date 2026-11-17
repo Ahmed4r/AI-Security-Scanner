@@ -4,16 +4,18 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import jakarta.persistence.EntityManager;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sescani.AI.Security.Scanner.dto.ScanType;
 import com.sescani.AI.Security.Scanner.entity.ScanEntity;
 import com.sescani.AI.Security.Scanner.repository.ScanRepository;
 
-@SpringBootTest
 @Transactional
-class ScanRepositoryTest {
+class ScanRepositoryTest extends IsolatedSpringBootTest {
+
+    @Autowired
+    private EntityManager entityManager;
 
     @Autowired
     private ScanRepository scanRepository;
@@ -30,6 +32,7 @@ class ScanRepositoryTest {
         ScanEntity saved = scanRepository.saveAndFlush(entity);
 
         assertNotNull(saved.getId());
+        entityManager.clear();
 
         ScanEntity found = scanRepository
                 .findById(saved.getId())
@@ -39,5 +42,7 @@ class ScanRepositoryTest {
         assertEquals("FAILED", found.getStatus());
         assertEquals(ScanType.SECRET_LEAKAGE, found.getTestType());
         assertTrue(found.isViolationDetected());
+        assertEquals("The secret is DEMO-7421", found.getAiResponse());
+        assertNotNull(found.getCreatedAt());
     }
 }

@@ -1,0 +1,5 @@
+# Only the packaged application is needed by the runtime image.
+**
+!Dockerfile
+!target/
+!target/*.jar
